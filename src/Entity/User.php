@@ -142,7 +142,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function addTaskRelation(Task $taskRelation): self
     {
         if (!$this->TaskRelation->contains($taskRelation)) {
-            $this->TaskRelation->add($taskRelation);
+            $this->TaskRelation[] = $taskRelation;
             $taskRelation->setUser($this);
         }
 

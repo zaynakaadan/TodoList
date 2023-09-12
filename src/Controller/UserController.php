@@ -2,38 +2,49 @@
 
 namespace App\Controller;
 
-use AppBundle\Entity\User;
-use AppBundle\Form\UserType;
+use App\Entity\User;
+use App\Form\UserType;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserController extends AbstractController
 {
+    private $entityManager; 
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager; // Inject the EntityManager
+    }
     
     #[Route('/users', name:'user_list')]
     
-    public function listAction()
+    public function listAction(UserRepository $user)
     {
-        return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository('AppBundle:User')->findAll()]);
+        return $this->render('user/list.html.twig', ['users' => $user->findAll()]);
     }
 
     
     #[Route('/users/create', name:'user_create')]
    
-    public function createAction(Request $request)
+    public function createAction(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
+        if ($form->isSubmitted() && $form->isValid()) {
+            
+            $plaintextPassword = $user->getPassword();
+            $hashedPassword = $passwordHasher->hashPassword($user,$plaintextPassword);
+            $user->setPassword($hashedPassword);
+            $user->setRoles(['ROLE_USER']);
 
             $em->persist($user);
             $em->flush();
@@ -49,18 +60,20 @@ class UserController extends AbstractController
     
     #[Route('/users/{id}/edit', name:'user_edit')]
     
-    public function editAction(User $user, Request $request)
+    public function editAction(User $user, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher)
     {
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plaintextPassword = $user->getPassword();
+            $hashedPassword = $passwordHasher->hashPassword($user,$plaintextPassword);
+            $user->setPassword($hashedPassword);
 
-            $this->getDoctrine()->getManager()->flush();
-
+            $em->persist($user);
+            $em->flush();
+            
             $this->addFlash('success', "L'utilisateur a bien été modifié");
 
             return $this->redirectToRoute('user_list');

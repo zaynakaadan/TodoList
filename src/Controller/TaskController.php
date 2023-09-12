@@ -3,41 +3,40 @@
 namespace App\Controller;
 
 use App\Entity\Task;
-use AppBundle\Form\TaskType;
+use App\Form\TaskType;
 
+use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TaskController extends  AbstractController
-{
-    private $entityManager; 
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager; // Inject the EntityManager
-    }
+{    
 
     #[Route('/tasks', name: 'task_list')]
-    public function listAction()
+    public function listAction(TaskRepository $task)
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->entityManager->getRepository('AppBundle:Task')->findAll()]);
+        return $this->render('task/list.html.twig', ['tasks' => $task->findAll()]);
     }
 
     
-    #[Route('/tasks/create', name:'task_create')]
-     
-    public function createAction(Request $request)
-    {
+    #[Route('/tasks/create', name:'task_create')]     
+    public function createAction(Request $request, EntityManagerInterface $em)
+    {        
         $task = new Task();
+        $task->setUser($this->getUser());
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->entityManager;
+        if ($form->isSubmitted() && $form->isValid()) {
 
+            $task->setCreatedAt(new \DateTimeImmutable)
+                ->setIsDone(false)
+                ->setUser($this->getUser());
+
+            //$em = $this->entityManager;
             $em->persist($task);
             $em->flush();
 
@@ -52,14 +51,16 @@ class TaskController extends  AbstractController
     
       #[Route('/tasks/{id}/edit', name:'task_edit')]
      
-    public function editAction(Task $task, Request $request)
+    public function editAction(Task $task, Request $request, EntityManagerInterface $em)
     {
+        //$this->denyAccessUnlessGranted('EDIT', $task);
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $this->entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($task);
+            $em->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
@@ -73,12 +74,12 @@ class TaskController extends  AbstractController
     }
 
    
-      #[Route('/tasks/{id}/toggle', name:'task_toggle')]
+    #[Route('/tasks/{id}/toggle', name:'task_toggle')]
      
-    public function toggleTaskAction(Task $task)
+    public function toggleTaskAction(Task $task, EntityManagerInterface $em)
     {
-        $task->toggle(!$task->isDone());
-        $this->entityManager->flush();
+        $task->setIsDone(!$task->isIsDone());
+        $em->flush();
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
@@ -88,9 +89,10 @@ class TaskController extends  AbstractController
     
     #[Route('/tasks/{id}/delete', name:'task_delete')]
      
-    public function deleteTaskAction(Task $task)
+    public function deleteTaskAction(Task $task, EntityManagerInterface $em)
     {
-        $em = $this->entityManager;
+        //$this->denyAccessUnlessGranted('DELETE', $task);
+       
         $em->remove($task);
         $em->flush();
 

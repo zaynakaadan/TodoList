@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
+use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -29,12 +30,12 @@ class Task
     private ?bool $isDone = null;
 
     #[ORM\ManyToOne(inversedBy: 'TaskRelation')]
-    private ?User $author = null;
+    private ?User $user = null;
 
 
     public function __construct()
     {
-        $this->createdAt = new \Datetime();
+        $this->createdAt = new \DateTimeImmutable();
         $this->isDone = false;
     }
 
@@ -55,6 +56,7 @@ class Task
         return $this;
     }
 
+    
     public function getTitle(): ?string
     {
         return $this->title;
@@ -91,14 +93,14 @@ class Task
         return $this;
     }
 
-    public function getAuthor(): ?User
+    public function getUser(): ?User
     {
-        return $this->author;
+        return $this->user;
     }
 
-    public function setAuthor(?User $author): self
+    public function setUser(?User $user): self
     {
-        $this->author = $author;
+        $this->user = $user;
 
         return $this;
     }
