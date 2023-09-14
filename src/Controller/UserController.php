@@ -14,14 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserController extends AbstractController
-{
-    private $entityManager; 
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager; // Inject the EntityManager
-    }
-    
+{    
     #[Route('/users', name:'user_list')]
     
     public function listAction(UserRepository $user)

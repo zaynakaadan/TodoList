@@ -49,11 +49,14 @@ class TaskController extends  AbstractController
     }
 
     
-      #[Route('/tasks/{id}/edit', name:'task_edit')]
-     
+    #[Route('/tasks/{id}/edit', name:'task_edit')]     
     public function editAction(Task $task, Request $request, EntityManagerInterface $em)
     {
-        //$this->denyAccessUnlessGranted('EDIT', $task);
+        $author = $task->getUser();
+        $user = $this->getUser();
+        if ($user!==$author) {
+            return $this->redirectToRoute('task_list');
+        }
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
@@ -74,11 +77,11 @@ class TaskController extends  AbstractController
     }
 
    
-    #[Route('/tasks/{id}/toggle', name:'task_toggle')]
-     
+    #[Route('/tasks/{id}/toggle', name:'task_toggle')]     
     public function toggleTaskAction(Task $task, EntityManagerInterface $em)
     {
         $task->setIsDone(!$task->isIsDone());
+        $em->persist($task);
         $em->flush();
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
@@ -91,7 +94,12 @@ class TaskController extends  AbstractController
      
     public function deleteTaskAction(Task $task, EntityManagerInterface $em)
     {
-        //$this->denyAccessUnlessGranted('DELETE', $task);
+        $author = $task->getUser();
+        $user = $this->getUser();
+        $role = $user->getRoles();
+        if ($user !== $author | $author === 1 && $role !== 'ROLE_ADMIN') {
+            return $this->redirectToRoute('task_list');
+        }
        
         $em->remove($task);
         $em->flush();
