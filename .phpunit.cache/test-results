@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Tests\\App\\Entity\\UserTest::testCreateUser":5},"times":{"Tests\\App\\Entity\\UserTest::testCreateUser":0.001,"App\\Tests\\Entity\\TaskTest::testCreateAction":0,"Tests\\App\\Entity\\RelationTest::testCreateRelation":0.046}}
