@@ -27,7 +27,7 @@ class UserType extends AbstractType
                 'second_options' => ['label' => 'Tapez le mot de passe à nouveau'],
             ])
             ->add('email', EmailType::class, ['label' => 'Adresse email'])
-            ->add('Roles', ChoiceType::class, [
+            ->add('roles', ChoiceType::class, [
                 'required' => true,
                 'multiple' => false,
                 'choices' => [
@@ -37,7 +37,7 @@ class UserType extends AbstractType
         ;
        
         $builder
-        ->get('Roles')
+        ->get('roles')
         ->addModelTransformer(new CallbackTransformer(
             function ($rolesArray) {
                  // transform the array to a string
