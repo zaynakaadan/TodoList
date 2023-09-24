@@ -49,7 +49,7 @@ class AppFixtures extends Fixture
         $task = new Task();
         $task->setTitle("Tache anonyme");
         $task->setContent("Contenu");
-        $task->setAuthor($anonyme);
+        $task->setUser($anonyme);
         $task->setCreatedAt(new \DateTimeImmutable);
         $task->setIsDone(false);
         $manager->persist($task);
