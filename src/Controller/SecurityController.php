@@ -31,10 +31,10 @@ class SecurityController extends AbstractController
     
     #[Route('/login_check', name:'login_check')]
      
-    public function loginCheck(): Response
+    public function loginCheck()
     {
         // This code is never executed.
-        return $this->redirectToRoute('task_list');
+       // return $this->redirectToRoute('task_list');
     }
 
     #[Route('/logout', name:'logout')]
