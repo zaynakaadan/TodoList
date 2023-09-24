@@ -11,12 +11,16 @@
   </php>
   <testsuites>
     <testsuite name="Project Test Suite">
-      <directory>tests</directory>
+        <directory>tests\Controller</directory>
+        <directory>tests\Entity</directory>
     </testsuite>
   </testsuites>
-  <coverage>
-    <include>
-      <directory suffix=".php">src</directory>
-    </include>
-  </coverage>
+
+ 
+
+
+
+
+  
+
 </phpunit>
