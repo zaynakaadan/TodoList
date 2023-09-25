@@ -25,11 +25,7 @@ class UserControllerTest extends WebTestCase
         var_dump($userCount); // Check if userCount is greater than 0
         
         $this->user = $this->userRepository->findOneByEmail('admin@todolist.com');
-        if ($this->user) {
-        echo "User found: " . $this->user->getEmail();
-        } else {
-            echo "User not found!";
-        }
+        
         $this->urlGenerator = $this->client->getContainer()->get('router.default');
         //Authentication on Symfony for the test with the user retrieved from the database
         $this->client->loginUser($this->user);
