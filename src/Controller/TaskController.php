@@ -90,13 +90,13 @@ class TaskController extends  AbstractController
     }
 
     
-    #[Route('/tasks/{id}/delete', name:'task_delete')]
-     
+    #[Route('/tasks/{id}/delete', name:'task_delete')]     
     public function deleteTaskAction(Task $task, EntityManagerInterface $em)
     {
         $author = $task->getUser();
         $user = $this->getUser();
         $role = $user->getRoles();
+        // The user can delete his own tasks or the tasks attached to the "anonymous" user if ROLE_ADMIN
         if ($user !== $author | $author === 1 && $role !== 'ROLE_ADMIN') {
             return $this->redirectToRoute('task_list');
         }

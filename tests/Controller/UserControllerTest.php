@@ -92,7 +92,6 @@ class UserControllerTest extends WebTestCase
         $this->client->submit($form);
         $this->client->followRedirect();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-    }
-
+    }    
 
 }
