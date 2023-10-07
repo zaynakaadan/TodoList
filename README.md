@@ -1,4 +1,7 @@
 # TodoList
+
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2aae3b6b762141bfaeadde688e7d6099)](https://app.codacy.com/gh/zaynakaadan/TodoList/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 Projet d'amélioration une application existante de ToDo &amp; Co. Projet 8 du parcours PHP Symfony sur Openclassrooms.
 
 ## Environnement utilisé durant le développement
