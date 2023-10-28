@@ -16,15 +16,12 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserController extends AbstractController
 {    
     #[Route('/users', name:'user_list')]
-    
     public function listAction(UserRepository $user)
     {
         return $this->render('user/list.html.twig', ['users' => $user->findAll()]);
     }
-
     
-    #[Route('/users/create', name:'user_create')]
-   
+    #[Route('/users/create', name:'user_create')]    
     public function createAction(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher)
     {
         $user = new User();

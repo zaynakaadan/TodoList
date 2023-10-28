@@ -82,7 +82,7 @@ class UserControllerTest extends WebTestCase
 
     public function testEditAction()
     {
-        $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_edit', array('id' => 69)));
+        $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_edit', array('id' => 68)));
         $form = $crawler->selectButton('Modifier')->form();
         $form['user[username]'] = 'Amodifier'. uniqid();
         $form['user[password][first]'] = 'newpassword';

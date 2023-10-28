@@ -34,7 +34,7 @@ class TaskController extends  AbstractController
 
             $task->setCreatedAt(new \DateTimeImmutable)
                 ->setIsDone(false)
-                ->setUser($this->getUser());
+                ->setUser($this->getUser());// Attache la tâche à l'utilisateur authentifié
 
             //$em = $this->entityManager;
             $em->persist($task);
@@ -54,6 +54,8 @@ class TaskController extends  AbstractController
     {
         $author = $task->getUser();
         $user = $this->getUser();
+
+        // Vérifie si l'utilisateur authentifié est l'auteur de la tâche
         if ($user!==$author) {
             return $this->redirectToRoute('task_list');
         }
